@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counter App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      font-size: 20px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .display {
+      font-size: 24px;
+      padding: 10px;
+      display: inline-block;
+      width: 40px;
+      text-align: center;
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="add">+</button>
+  <span class="display">0</span>
+  <button id="sub">-</button>
+
+  <script defer>
+    const increaseBtn = document.getElementById("add");
+    const decreaseBtn = document.getElementById("sub");
+    const display = document.getElementsByClassName("display")[0];
+
+    let count = 0;
+
+    display.textContent = count;
+
+    increaseBtn.addEventListener("click", () => {
+      count++;
+      display.textContent = count;
+    });
+
+    decreaseBtn.addEventListener("click", () => {
+      count--;
+      display.textContent = count;
+    });
+  </script>
+
+</body>
+</html>
