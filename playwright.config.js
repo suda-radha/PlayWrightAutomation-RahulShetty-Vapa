@@ -14,7 +14,7 @@ const config = {
     //browserName: "firefox"
      //browserName: "webkit"
 
-     headless: false
+     headless: true
 
   }
 
