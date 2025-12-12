@@ -22,7 +22,7 @@ test('Mocking api call', async ({ page }) => {
     });
 
     //await page.goto("http://127.0.0.1:5500/apiCall.html");
-    await page.goto("http://127.0.0.1:5500/tests/tests-udemy-vapa/myapp_username_gen_api.html");
+    await page.goto("http://127.0.0.1:5500/myapps/username_gen_api.html");
 
     await page.click("#btn");
 

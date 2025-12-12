@@ -6,7 +6,7 @@ const {test,expect} = require("@playwright/test")
 test.describe("Auth Tests",()=>{
 
     test.beforeEach(async({page})=>{
-        await page.goto("http://127.0.0.1:5500/tests/tests-udemy-vapa/login2.html")
+        await page.goto("http://127.0.0.1:5500/myapps/login2.html")
     })
 
 
@@ -49,7 +49,7 @@ test.describe("Auth Tests",()=>{
         const page1 = await context1.newPage()
 
 
-        await page1.goto("http://127.0.0.1:5500/tests/tests-udemy-vapa/login2.html")
+        await page1.goto("http://127.0.0.1:5500/myapps/login2.html")
 
         await page1.fill("#username","user")
         await page1.fill("#password","pass")
@@ -72,7 +72,7 @@ test.describe("Auth Tests",()=>{
 
         const page2 = await context2.newPage()
 
-        await page2.goto("http://127.0.0.1:5500/tests/tests-udemy-vapa/login2.html")
+        await page2.goto("http://127.0.0.1:5500/myapps/login2.html")
 
         //without login it should show login successful message as we have included the cookie from first context
 
