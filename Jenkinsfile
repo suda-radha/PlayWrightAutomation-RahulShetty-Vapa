@@ -1,8 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:latest'
-            args '-u root:root'
+            image 'node:20-windowsservercore'
         }
     }
 
