@@ -2,28 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage("log the node version") {
+        stage('Log Node version') {
             steps {
-                script {
-                    bat 'node --version'
-                    bat 'npm --version'
-                }
+                bat 'node --version'
+                bat 'npm --version'
             }
         }
-        stage("install playwright and dependencies") {
+
+        stage('Install Playwright and dependencies') {
             steps {
-                script {
-                    bat 'npm -D @playwright/test'
-                    bat 'npx playwright install'
-                    bat 'npx playwright install-deps'
-                }
+                bat 'npm install -D @playwright/test'
+                bat 'npx playwright install'
             }
         }
-        stage("List all test cases") {
+
+        stage('List all test cases') {
             steps {
-                script {
-                    bat 'npx playwright test --list'
-                }
+                bat 'npx playwright test --list'
             }
         }
     }
