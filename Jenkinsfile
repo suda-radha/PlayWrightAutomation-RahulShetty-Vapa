@@ -25,9 +25,7 @@ pipeline {
 
         stage('Install HTTP Server') {
             steps {
-                powershell '''
-                    Start-Process "http-server" -ArgumentList "-p 8080" -NoNewWindow
-                '''
+                bat 'npm install -g http-server'
             }
         }
 
