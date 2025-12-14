@@ -31,14 +31,16 @@ pipeline {
 
         stage('Start HTTP Server') {
             steps {
-                bat 'start /B http-server -p 8080'
+                powershell '''
+                    Start-Process "http-server" -ArgumentList "-p 8080" -NoNewWindow
+                '''
             }
         }
 
         stage('Wait for HTTP Server to start') {
             steps {
                 script {
-                    def maxRetries = 5
+                    def maxRetries = 50
                     def retryCount = 0
                     def serverReady = false
 
