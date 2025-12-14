@@ -32,8 +32,8 @@ pipeline {
         stage('Start HTTP Server') {
             steps {
                 powershell '''
-                    # Start http-server in background using npx
-                    Start-Process "npx" -ArgumentList "http-server -p 8080" -NoNewWindow
+                    # Start http-server on port 5500 in background using npx
+                    Start-Process "npx" -ArgumentList "http-server -p 5500" -NoNewWindow
                 '''
             }
         }
@@ -41,7 +41,7 @@ pipeline {
         stage('Wait for HTTP Server to start') {
             steps {
                 script {
-                    def maxRetries = 50
+                    def maxRetries = 5
                     def retryCount = 0
                     def serverReady = false
 
@@ -49,13 +49,13 @@ pipeline {
                         // Check server status using curl in CMD
                         def response = bat(
                             returnStatus: true,
-                            script: 'curl -s -o nul http://127.0.0.1:8080'
+                            script: 'curl -s -o nul http://127.0.0.1:5500'
                         )
 
                         if (response == 0) {
                             serverReady = true
                         } else {
-                            echo "Waiting for HTTP Server to start..."
+                            echo "Waiting for HTTP Server to start on port 5500..."
                             sleep(time: 1, unit: 'SECONDS')
                             retryCount++
                         }
@@ -67,5 +67,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
