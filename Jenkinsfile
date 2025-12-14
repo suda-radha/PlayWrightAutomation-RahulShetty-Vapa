@@ -4,21 +4,21 @@ pipeline {
     stages {
         stage('Log Node version') {
             steps {
-                bat 'node --version'
-                bat 'npm --version'
+                poweshell 'node --version' 
+                poweshell 'npm --version'
             }
         }
 
         stage('Install Playwright and dependencies') {
             steps {
-                bat 'npm install -D @playwright/test'
-                bat 'npx playwright install'
+                poweshell 'npm install -D @playwright/test'
+                poweshell 'npx playwright install'
             }
         }
 
         stage('List all test cases') {
             steps {
-                bat 'npx playwright test --list'
+                poweshell 'npx playwright test --list'
             }
         }
     }
