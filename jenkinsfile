@@ -10,7 +10,7 @@ pipeline {
         stage("log the node version") {
             steps {
                 script {
-                    sh 'node --version'
+                    bat 'node --version'
                 }
             }
         }
