@@ -32,7 +32,8 @@ pipeline {
         stage('Start HTTP Server') {
             steps {
                 powershell '''
-                    Start-Process "http-server" -ArgumentList "-p 8080" -NoNewWindow
+                    # Start http-server in background using npx
+                    Start-Process "npx" -ArgumentList "http-server -p 8080" -NoNewWindow
                 '''
             }
         }
@@ -45,6 +46,7 @@ pipeline {
                     def serverReady = false
 
                     while (retryCount < maxRetries && !serverReady) {
+                        // Check server status using curl in CMD
                         def response = bat(
                             returnStatus: true,
                             script: 'curl -s -o nul http://127.0.0.1:8080'
@@ -65,6 +67,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
