@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    // to fix special character issue in jenkins console output
+    environment {
+        FORCE_COLOR = '0'
+    }
 
     stages {
 
