@@ -1,8 +1,8 @@
 pipeline {
     agent any
-    // to fix special character issue in jenkins console output
+    
     environment {
-        FORCE_COLOR = '0'
+        PLAYWRIGHT_SNAPSHOT_DIR = "${env.WORKSPACE}\\tests\\tests-udemy-vapa\\visual.spec.js-snapshots"
     }
 
     stages {
