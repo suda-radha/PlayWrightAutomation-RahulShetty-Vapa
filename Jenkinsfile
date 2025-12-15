@@ -17,12 +17,6 @@ pipeline {
             }
         }
 
-        stage('List all test cases') {
-            steps {
-                bat 'npx playwright test --list'
-            }
-        }
-
         stage('Install HTTP Server') {
             steps {
                 bat 'npm install -g http-server'
@@ -65,6 +59,17 @@ pipeline {
                         error "Server is not ready after ${maxRetries} seconds"
                     }
                 }
+            }
+        }
+
+        stage('List all test cases') {
+            steps {
+                bat 'npx playwright test --list'
+            }
+        }
+        stage('Run Playwright tests') {
+            steps {
+                bat 'npx playwright test tests/tests-udemy-vapa/auth2.spec.js --reporter=html'
             }
         }
 
