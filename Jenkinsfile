@@ -25,14 +25,12 @@ pipeline {
 
         stage('Start HTTP Server') {
             steps {
-                powershell '''
-                # Change to workspace directory
-                cd "${env.WORKSPACE}"
-                # Start http-server in background
-                Start-Process "npx" -ArgumentList "http-server -p 5500 -c-1" -NoNewWindow
-            '''
-    }
-}
+                 bat '''
+                    cd %WORKSPACE%
+                    start "" /B cmd /c "npx http-server -p 5500 -c-1 > server.log 2>&1"
+                '''
+            }
+        }
 
         stage('Wait for HTTP Server to start') {
             steps {
