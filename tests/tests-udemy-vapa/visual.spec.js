@@ -1,16 +1,22 @@
-const {test,expect} = require("@playwright/test")
+const { test, expect } = require("@playwright/test");
+const path = require("path");
 
 // Visual Regression Tests - will fail first time as no baseline images are present and 
 // will pass subsequently if UI is unchanged. so you need to verify the images first time and
 // then accept them as baseline images.
 
+// Resolve snapshot folder from environment variable, fallback to default
+const snapshotDir = process.env.PLAYWRIGHT_SNAPSHOT_DIR || path.join(__dirname, `${__filename}-snapshots`);
+
 test("take screenshot", async ({ page }) => {
   await page.goto("https://www.example.com/");
   const screenshot = await page.screenshot();
-  expect(screenshot).toMatchSnapshot("home.png");
+
+  expect(screenshot).toMatchSnapshot(
+    path.join(snapshotDir, "home.png")
+  );
 });
 
-// Responsive design test - screenshots at different viewport sizes
 test("responsive screenshot", async ({ page }) => {
   const viewPorts = [
     { width: 320, height: 480 },
@@ -22,6 +28,9 @@ test("responsive screenshot", async ({ page }) => {
     await page.setViewportSize(viewPort);
     await page.goto("https://www.example.com");
     const screenshot = await page.screenshot();
-    expect(screenshot).toMatchSnapshot(`homepage at ${viewPort.width} x ${viewPort.height}.png`);
+
+    expect(screenshot).toMatchSnapshot(
+      path.join(snapshotDir, `homepage at ${viewPort.width} x ${viewPort.height}.png`)
+    );
   }
 });
