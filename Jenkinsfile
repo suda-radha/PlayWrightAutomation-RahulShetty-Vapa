@@ -37,7 +37,7 @@ pipeline {
         stage('Wait for HTTP Server to start') {
             steps {
                 script {
-                    def maxRetries = 5
+                    def maxRetries = 30
                     def retryCount = 0
                     def serverReady = false
 
@@ -52,7 +52,7 @@ pipeline {
                             serverReady = true
                         } else {
                             echo "Waiting for HTTP Server to start on port 5500..."
-                            sleep(time: 1, unit: 'SECONDS')
+                            sleep(time: 2, unit: 'SECONDS')
                             retryCount++
                         }
                     }
