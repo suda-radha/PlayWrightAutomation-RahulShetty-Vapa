@@ -70,6 +70,18 @@ pipeline {
             }
         }
 
+        stage('Publish Playwright Report') {
+            steps {
+                publishHTML([
+                    reportDir: 'playwright-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright Test Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true
+             ])
+         }
+        }
+
         stage('Stop HTTP Server') {
             steps {
                 powershell '''
