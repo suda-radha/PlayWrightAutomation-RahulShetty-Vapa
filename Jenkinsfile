@@ -72,6 +72,8 @@ pipeline {
             steps {
                 // Generate HTML report
                 bat 'npx playwright test tests/tests-udemy-vapa --reporter=html'
+                // Optional: wait a second to ensure files flushed
+                bat 'timeout /t 1 /nobreak'
             }
         }
 
