@@ -66,7 +66,7 @@ pipeline {
 
         stage('Run Playwright tests') {
             steps {
-                bat 'npx playwright test tests/tests-udemy-vapa/auth2.spec.js --reporter=html'
+                bat 'npx playwright test tests/tests-udemy-vapa --reporter=html'
             }
         }
 
