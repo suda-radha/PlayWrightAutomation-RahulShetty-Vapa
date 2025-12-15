@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     environment {
         PLAYWRIGHT_SNAPSHOT_DIR = "${env.WORKSPACE}\\tests\\tests-udemy-vapa\\visual.spec.js-snapshots"
     }
@@ -29,7 +29,7 @@ pipeline {
 
         stage('Start HTTP Server') {
             steps {
-                bat '''
+                 bat '''
                     cd %WORKSPACE%
                     start "" /B cmd /c "npx http-server -p 5500 -c-1 > server.log 2>&1"
                 '''
@@ -70,43 +70,38 @@ pipeline {
 
         stage('Run Playwright tests') {
             steps {
-                // Generate HTML report
                 bat 'npx playwright test tests/tests-udemy-vapa --reporter=html'
             }
         }
 
-    }
+        stage('Publish Playwright Report') {
+            steps {
+                publishHTML([
+                    reportDir: 'playwright-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright Test Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+             ])
+         }
+        }
 
-    post {
-        always {
-            // Stop HTTP Server
-            powershell '''
-                $port = 5500
-                $processIds = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue |
-                              Select-Object -ExpandProperty OwningProcess -Unique
+        stage('Stop HTTP Server') {
+            steps {
+                powershell '''
+                    $port = 5500
+
+                    $processIds = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue |
+                          Select-Object -ExpandProperty OwningProcess -Unique
+
                 foreach ($procId in $processIds) {
                     Write-Host "Stopping process with PID $procId listening on port $port"
                     Stop-Process -Id $procId -Force
                 }
             '''
-
-            // Archive Playwright HTML report for Jenkins
-            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
-
-            // Publish HTML report plugin (clickable link in Jenkins)
-            publishHTML([
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright Test Report',
-                keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
-            ])
+            }
         }
 
-        failure {
-            echo 'Some tests failed! Check HTML report and console output for details.'
-        }
     }
 }
-
