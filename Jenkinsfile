@@ -26,41 +26,37 @@ pipeline {
         stage('Start HTTP Server') {
             steps {
                 powershell '''
-                    # Start http-server in a background job
-                    $job = Start-Job { npx http-server -p 5500 }
-                    # Give it a few seconds to initialize
-                    Start-Sleep -Seconds 3
+                    # Change to workspace directory
+                    cd "${env.WORKSPACE}"
+                    # Start http-server in background
+                    npx http-server -p 5500 -c-1 &
                 '''
             }
         }
 
         stage('Wait for HTTP Server to start') {
             steps {
-                script {
-                    def maxRetries = 30
-                    def retryCount = 0
-                    def serverReady = false
+                powershell '''
+                    $maxRetries = 30
+                    $sleepSeconds = 2
+                    $retryCount = 0
+                    $serverReady = $false
 
-                    while (retryCount < maxRetries && !serverReady) {
-                        // Check server status using curl in CMD
-                        def response = bat(
-                            returnStatus: true,
-                            script: 'curl -s -o nul http://127.0.0.1:5500'
-                        )
-
-                        if (response == 0) {
-                            serverReady = true
-                        } else {
-                            echo "Waiting for HTTP Server to start on port 5500..."
-                            sleep(time: 2, unit: 'SECONDS')
-                            retryCount++
+                    while ($retryCount -lt $maxRetries -and -not $serverReady) {
+                        try {
+                            Invoke-WebRequest http://127.0.0.1:5500 -UseBasicParsing -TimeoutSec 1
+                            $serverReady = $true
+                        } catch {
+                            Write-Host "Waiting for HTTP Server to start on port 5500..."
+                            Start-Sleep -Seconds $sleepSeconds
+                            $retryCount++
                         }
                     }
 
-                    if (!serverReady) {
-                        error "Server is not ready after ${maxRetries} seconds"
+                    if (-not $serverReady) {
+                        throw "Server is not ready after $($maxRetries * $sleepSeconds) seconds"
                     }
-                }
+                '''
             }
         }
 
@@ -69,9 +65,24 @@ pipeline {
                 bat 'npx playwright test --list'
             }
         }
+
         stage('Run Playwright tests') {
             steps {
                 bat 'npx playwright test tests/tests-udemy-vapa/auth2.spec.js --reporter=html'
+            }
+        }
+
+        stage('Stop HTTP Server') {
+            steps {
+                powershell '''
+                    # Find all node processes listening on port 5500 and stop them
+                    $port = 5500
+                    $processes = Get-NetTCPConnection -LocalPort $port | Select-Object -ExpandProperty OwningProcess -Unique
+                    foreach ($pid in $processes) {
+                        Write-Host "Stopping process with PID $pid listening on port $port"
+                        Stop-Process -Id $pid -Force
+                    }
+                '''
             }
         }
 
