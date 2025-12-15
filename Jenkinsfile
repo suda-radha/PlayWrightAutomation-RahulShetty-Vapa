@@ -99,8 +99,8 @@ pipeline {
                 reportFiles: 'index.html',
                 reportName: 'Playwright Test Report',
                 keepAll: true,
-                alwaysLinkToLastBuild: true,
-                allowMissing: true
+                alwaysLinkToLastBuild: true, // <-- ensures report is not missing
+                allowMissing: false
             ])
         }
 
