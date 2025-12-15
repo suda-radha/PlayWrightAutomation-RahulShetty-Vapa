@@ -26,8 +26,10 @@ pipeline {
         stage('Start HTTP Server') {
             steps {
                 powershell '''
-                    # Start http-server on port 5500 in background using npx
-                    Start-Process "npx" -ArgumentList "http-server -p 5500" -NoNewWindow
+                    # Start http-server in a background job
+                    $job = Start-Job { npx http-server -p 5500 }
+                    # Give it a few seconds to initialize
+                    Start-Sleep -Seconds 3
                 '''
             }
         }
