@@ -73,14 +73,16 @@ pipeline {
         stage('Stop HTTP Server') {
             steps {
                 powershell '''
-                    # Find all node processes listening on port 5500 and stop them
                     $port = 5500
-                    $processes = Get-NetTCPConnection -LocalPort $port | Select-Object -ExpandProperty OwningProcess -Unique
-                    foreach ($pid in $processes) {
-                        Write-Host "Stopping process with PID $pid listening on port $port"
-                        Stop-Process -Id $pid -Force
-                    }
-                '''
+
+                    $processIds = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue |
+                          Select-Object -ExpandProperty OwningProcess -Unique
+
+                foreach ($procId in $processIds) {
+                    Write-Host "Stopping process with PID $procId listening on port $port"
+                    Stop-Process -Id $procId -Force
+                }
+            '''
             }
         }
 
